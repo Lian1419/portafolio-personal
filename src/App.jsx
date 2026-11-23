@@ -1,4 +1,4 @@
-
+﻿
 import { useState } from 'react'
 import './App.css'
 
@@ -23,7 +23,7 @@ function App() {
     setEstado('Enviando...')
 
     try {
-      const respuesta = await fetch('http://localhost:3000/api/mensajes', {
+      const respuesta = await fetch('/api/mensajes', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
