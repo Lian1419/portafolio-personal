@@ -1,0 +1,71 @@
+﻿---
+- name: Preparar servidor Ubuntu 24.04
+  hosts: servidores
+  become: true
+
+  tasks:
+    - name: Actualizar paquetes
+      apt:
+        update_cache: true
+        upgrade: dist
+
+    - name: Instalar dependencias
+      apt:
+        name:
+          - ca-certificates
+          - curl
+          - git
+          - ufw
+        state: present
+
+    - name: Crear directorio de claves Docker
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Descargar clave oficial de Docker
+      get_url:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        dest: /etc/apt/keyrings/docker.asc
+        mode: '0644'
+
+    - name: Agregar repositorio Docker
+      apt_repository:
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu noble stable"
+        state: present
+        filename: docker
+
+    - name: Instalar Docker y Compose
+      apt:
+        update_cache: true
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+
+    - name: Activar Docker
+      service:
+        name: docker
+        enabled: true
+        state: started
+
+    - name: Permitir SSH
+      ufw:
+        rule: allow
+        name: OpenSSH
+
+    - name: Permitir HTTP
+      ufw:
+        rule: allow
+        port: '80'
+        proto: tcp
+
+    - name: Permitir HTTPS
+      ufw:
+        rule: allow
+        port: '443'
+        proto: tcp

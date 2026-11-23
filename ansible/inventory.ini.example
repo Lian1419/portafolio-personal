@@ -1,0 +1,2 @@
+﻿[servidores]
+ubuntu ansible_host=IP_PUBLICA_DEL_SERVIDOR ansible_user=ubuntu ansible_ssh_private_key_file=RUTA_DE_TU_CLAVE.pem
